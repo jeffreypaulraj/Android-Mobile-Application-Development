@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivityColorSwap extends AppCompatActivity {
 
     Button colorButton;
     Button notColorButton;
