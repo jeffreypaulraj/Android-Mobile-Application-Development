@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println(passwordOne);
                 System.out.println(passwordTwo);
                 if(passwordOne.equals(passwordTwo) && !alreadyUsed){
-                    database.add(password
+                    database.add(passwordOne);
                     matchSwitch.setText("Match");
                     matchSwitch.setChecked(true);
                 }
