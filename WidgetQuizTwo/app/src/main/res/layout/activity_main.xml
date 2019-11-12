@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <RadioGroup
+        android:id="@+id/id_groupButtons"
+        android:layout_width="142dp"
+        android:layout_height="58dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/id_oneButton"
+            android:layout_width="75dp"
+            android:layout_height="50dp"
+            android:text="One" />
+
+        <RadioButton
+            android:id="@+id/id_twoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:text="Two" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/id_playButton"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_groupButtons"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="136dp"
+        android:layout_marginLeft="136dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="132dp"
+        android:layout_marginRight="132dp"
+        android:text="Play" />
+
+    <ImageView
+        android:id="@+id/id_imageView"
+        android:layout_width="206dp"
+        android:layout_height="146dp"
+        android:layout_below="@+id/id_playButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="103dp"
+        android:layout_marginLeft="103dp"
+        android:layout_marginTop="47dp"
+        android:layout_marginEnd="102dp"
+        android:layout_marginRight="102dp"
+        app:srcCompat="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/id_totalText"
+        android:layout_width="135dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_imageView"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="142dp"
+android:textAlignment="center"
+        android:layout_marginLeft="142dp"
+        android:layout_marginTop="59dp"
+        android:layout_marginEnd="134dp"
+        android:layout_marginRight="134dp"
+        android:text="Total" />
+
+    <TextView
+        android:id="@+id/id_resultText"
+        android:layout_width="138dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/id_totalText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="74dp"
+        android:textAlignment="center"
+        android:text="Result" />
+
+</RelativeLayout>
