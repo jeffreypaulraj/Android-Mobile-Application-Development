@@ -14,6 +14,8 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     Switch switchOne;
@@ -32,7 +34,14 @@ public class MainActivity extends AppCompatActivity {
     boolean oneChecked;
     boolean twoChecked;
     boolean threeChecked;
+
+    int atIndex;
+    boolean com;
     CharSequence emailTextVerify;
+    CharSequence last;
+    ArrayList<String> list;
+    boolean inDatabase;
+    String databaseChecker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +63,17 @@ public class MainActivity extends AppCompatActivity {
         twoChecked = false;
         threeChecked = false;
 
+        atIndex = -1;
+        com = false;
+
         emailTextVerify = "";
+        last = "";
+
+        list = new ArrayList<>();
+        list.add("dassda@gmail.com");
+        list.add("fds@gmail.com");
+        list.add("tar@gmail.com");
+        inDatabase = false;
 
         switchOne.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -90,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 emailTextVerify = s;
+                System.out.println("new: " + emailTextVerify);
             }
 
             @Override
@@ -99,30 +119,71 @@ public class MainActivity extends AppCompatActivity {
         });
 
         verifyButton.setOnClickListener(new View.OnClickListener() {
-            CharSequence s = emailTextVerify;
-            int atIndex = -1;
-            boolean com = false;
             @Override
             public void onClick(View v) {
 
-                System.out.println(s);
+                System.out.println("String: " + emailTextVerify);
 
-                for(int i = 0; i < s.length(); i ++){
-                    if(s.charAt(i) == '@'){
+                for(int i = 0; i < emailTextVerify.length(); i ++){
+                    if(emailTextVerify.charAt(i) == '@'){
                         atIndex = i;
                     }
                 }
-                if(s.length()>=4){
-                    if(s.subSequence(s.length() - 4, s.length()).equals(".com")){
+                if(emailTextVerify.length()>=4){
+                    CharSequence last =  emailTextVerify.subSequence(emailTextVerify.length()-4, emailTextVerify.length());
+                    System.out.println("Last: " + last);
+                    if(last == (".com")){
                         com = true;
                     }
                 }
+                com = true;
                 if(com && atIndex >= 0){
                     verifyText.setText("Verified");
                 }
                 else{
                     verifyText.setText("NOt Verified");
+                    System.out.println(atIndex);
+                    System.out.println(com);
                 }
+            }
+        });
+
+        databaseEnter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                databaseChecker = (String)charSequence;
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        databaseButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+
+            public void onClick(View view) {
+                for(int i = 0; i < list.size(); i++){
+                    if(databaseChecker == list.get(i)){
+                        inDatabase = true;
+                    }
+                }
+
+                if(inDatabase){
+                    databaseText.setText("In Database");
+                    inDatabase = false;
+                }
+                else{
+                    databaseText.setText("not In Database");
+                }
+
             }
         });
     }
