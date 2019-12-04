@@ -23,17 +23,28 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     ListView teamListView;
-    ArrayList<Player> playerList;
+    ArrayList<Player> playerList = new ArrayList<>();
+    String playerName = "";
+    String playerPosition = "";
+    String playerPoints = "";
     TextView playerPositionText;
     TextView playerPointsText;
+    TextView nameText;
+
+    public static final String PPGKEY = "ppgkey";
+    public static final String POSITIONKEY = "poskey";
+    public static final String LISTKEY = "lstkey";
+    public static final String NAMEKEY = "nmkey";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         teamListView = findViewById(R.id.teamListView);
+        nameText = findViewById(R.id.id_nameText);
         playerPositionText = findViewById(R.id.id_playerPositionText);
         playerPointsText = findViewById(R.id.id_playerPointsText);
-        playerList = new ArrayList<>();
+
         playerList.add(new Player("Kawhi Leonard", "SF", 25.9, R.drawable.kawhi));
         playerList.add(new Player("Giannis Antetokounmpo", "PF", 30.8, R.drawable.giannis));
         playerList.add(new Player("James Harden", "PF",39.5, R.drawable.harden));
@@ -45,8 +56,19 @@ public class MainActivity extends AppCompatActivity {
         playerList.add(new Player("Damian Lillard", "PG",26.7, R.drawable.damian));
         playerList.add(new Player("Paul George", "SF",23.5, R.drawable.paul));
         playerList.add(new Player("Karl-Anthony Towns", "C",25.9, R.drawable.karl));
+
         CustomAdapter customAdapter = new CustomAdapter(this, R.layout.adapter_custom, playerList);
          teamListView.setAdapter(customAdapter);
+
+        if (savedInstanceState != null) {
+            playerPoints = savedInstanceState.getString(PPGKEY);
+            playerPosition = savedInstanceState.getString(POSITIONKEY);
+            playerName = savedInstanceState.getString(NAMEKEY);
+
+            playerPointsText.setText(playerPoints);
+            playerPositionText.setText(playerPosition);
+           // nameText.setText(playerName);
+        }
 
     }
 
@@ -100,10 +122,10 @@ public class MainActivity extends AppCompatActivity {
             View view = layoutInflater.inflate(R.layout.adapter_custom, null);
 
             ImageView image = view.findViewById(R.id.id_adapter_image);
-            System.out.println("Value: " + image);
             image.setImageResource(playerList.get(position).getImage());
             Button nameButton = view.findViewById(R.id.id_adapter_nameButton);
             nameButton.setText("" + playerList.get(position).getName());
+
             Button removeButton = view.findViewById(R.id.id_adapter_removeButton);
 
             nameButton.setOnClickListener(new View.OnClickListener() {
@@ -111,9 +133,12 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     playerPositionText.setText("Position: " + playerList.get(position).getPosition());
                     playerPointsText.setText("Points Per Game: " + playerList.get(position).getPoints());
-                    for(int i = 0; i < playerList.size();i++){
+                    nameText.setText(playerList.get(position).getName());
 
-                    }
+                    playerPosition = playerPositionText.getText().toString();
+                    playerPoints = playerPointsText.getText().toString();
+                    playerName = nameText.getText().toString();
+
                 }
             });
 
@@ -128,5 +153,14 @@ public class MainActivity extends AppCompatActivity {
             return view;
         }
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(PPGKEY, playerPoints);
+        outState.putString(POSITIONKEY, playerPosition);
+        outState.putString(NAMEKEY, playerName);
+        //outState.putParcelableArrayList(LISTKEY, playerList);
     }
 }

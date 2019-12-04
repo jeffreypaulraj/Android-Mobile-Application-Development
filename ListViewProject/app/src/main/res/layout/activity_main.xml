@@ -41,4 +41,14 @@
         app:layout_constraintStart_toEndOf="@+id/id_playerPositionText"
         app:layout_constraintTop_toBottomOf="@+id/teamListView"
         app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/id_nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/id_playerPositionText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
