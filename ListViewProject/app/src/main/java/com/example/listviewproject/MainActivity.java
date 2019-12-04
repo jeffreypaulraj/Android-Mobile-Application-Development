@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             playerPointsText.setText(playerPoints);
             playerPositionText.setText(playerPosition);
-           // nameText.setText(playerName);
+            nameText.setText(playerName);
         }
 
     }
@@ -161,6 +161,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(PPGKEY, playerPoints);
         outState.putString(POSITIONKEY, playerPosition);
         outState.putString(NAMEKEY, playerName);
-        //outState.putParcelableArrayList(LISTKEY, playerList);
+       // outState.putParcelableArrayList(LISTKEY, playerList);
     }
 }
