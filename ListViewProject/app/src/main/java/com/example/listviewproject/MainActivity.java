@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -29,9 +31,10 @@ public class MainActivity extends AppCompatActivity {
         teamListView = findViewById(R.id.teamListView);
         playerList = new ArrayList<>();
         playerList.add(new Player("Kawhi Leonard", "SF/PF", 25.9, R.drawable.kawhi));
+        playerList.add(new Player("Giannis Antetokounmpo", "PF", 30.8, R.drawable.giannis));
+        CustomAdapter customAdapter = new CustomAdapter(this, R.layout.adapter_custom, playerList);
+         teamListView.setAdapter(customAdapter);
 
-       // CustomAdapter customAdapter = new CustomAdapter(this, R.layout.adapter_custom, playerList);
-   //     teamListView.setAdapter(customAdapter);
     }
 
     public class Player{
@@ -62,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class CustomAdapter extends ArrayAdapter<String>{
-        List<String> arrayList;
+    public class CustomAdapter extends ArrayAdapter<Player>{
+        List<Player> arrayList;
         Context parentContext;
         int xmlResource;
-        public CustomAdapter(@NonNull Context context, int resource, @NonNull List<String> objects){
+        public CustomAdapter(@NonNull Context context, int resource, @NonNull List<Player> objects){
             super(context, resource, objects);
             arrayList = objects;
             parentContext = context;
@@ -79,8 +82,12 @@ public class MainActivity extends AppCompatActivity {
             LayoutInflater layoutInflater = (LayoutInflater) parentContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             View view = layoutInflater.inflate(R.layout.adapter_custom, null);
 
-            //TextView textView
-            return super.getView(position, convertView, parent);
+            ImageView image = view.findViewById(R.id.id_adapter_image);
+            System.out.println("Value: " + image);
+            image.setImageResource(playerList.get(position).getImage());
+            Button nameButton = view.findViewById(R.id.id_adapter_nameButton);
+            nameButton.setText("" + playerList.get(position).getName());
+            return view;
         }
 
     }
