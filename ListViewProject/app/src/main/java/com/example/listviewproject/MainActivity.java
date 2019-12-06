@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,7 +17,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
     TextView playerPositionText;
     TextView playerPointsText;
     TextView nameText;
+    TextView contentText;
+    ArrayList<String> extraContentList;
 
     public static final String PPGKEY = "ppgkey";
     public static final String POSITIONKEY = "poskey";
@@ -45,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         playerPositionText = findViewById(R.id.id_playerPositionText);
         playerPointsText = findViewById(R.id.id_playerPointsText);
 
+        extraContentList = new ArrayList<>();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            contentText = findViewById(R.id.contextTextView);
+        }
+
+
         playerList.add(new Player("Kawhi Leonard", "SF", 25.9, R.drawable.kawhi));
         playerList.add(new Player("Giannis Antetokounmpo", "PF", 30.8, R.drawable.giannis));
         playerList.add(new Player("James Harden", "PF",39.5, R.drawable.harden));
@@ -57,23 +68,28 @@ public class MainActivity extends AppCompatActivity {
         playerList.add(new Player("Paul George", "SF",23.5, R.drawable.paul));
         playerList.add(new Player("Karl-Anthony Towns", "C",25.9, R.drawable.karl));
 
-        CustomAdapter customAdapter = new CustomAdapter(this, R.layout.adapter_custom, playerList);
-         teamListView.setAdapter(customAdapter);
+
+        extraContentList.add("Kawhi Leonard is one of the best two-way players in the NBA. After leading the Toronto Raptors to winning the 2019 NBA Championship, he is now playing" +
+                "for the Los Angeles Clippers, alongside the likes of Paul George, Patrick Beverly, and Lou Williams");
 
         if (savedInstanceState != null) {
             playerPoints = savedInstanceState.getString(PPGKEY);
             playerPosition = savedInstanceState.getString(POSITIONKEY);
             playerName = savedInstanceState.getString(NAMEKEY);
+            playerList = (ArrayList<Player>)savedInstanceState.getSerializable(LISTKEY);
 
             playerPointsText.setText(playerPoints);
             playerPositionText.setText(playerPosition);
             nameText.setText(playerName);
         }
 
+        CustomAdapter customAdapter = new CustomAdapter(this, R.layout.adapter_custom, playerList);
+        teamListView.setAdapter(customAdapter);
+
     }
 
 
-    public class Player{
+    public class Player implements Serializable {
 
         String name;
         String position;
@@ -139,13 +155,48 @@ public class MainActivity extends AppCompatActivity {
                     playerPoints = playerPointsText.getText().toString();
                     playerName = nameText.getText().toString();
 
-                }
+                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    contentText.setText(extraContentList.get(position));
+                 }
+                    }
             });
 
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playerList.remove(position);
+                    if(arrayList.get(position).getName().equals(nameText.getText().toString())){
+                        if(position == arrayList.size() - 1){
+                            playerPositionText.setText("Position: " + playerList.get(0).getPosition());
+                            playerPointsText.setText("Points Per Game: " + playerList.get(0).getPoints());
+                            nameText.setText(playerList.get(0).getName());
+
+                            playerPosition = playerPositionText.getText().toString();
+                            playerPoints = playerPointsText.getText().toString();
+                            playerName = nameText.getText().toString();
+                        }
+                        else{
+                            playerPositionText.setText("Position: " + playerList.get(position+1).getPosition());
+                            playerPointsText.setText("Points Per Game: " + playerList.get(position+1).getPoints());
+                            nameText.setText(playerList.get(position+1).getName());
+
+                            playerPosition = playerPositionText.getText().toString();
+                            playerPoints = playerPointsText.getText().toString();
+                            playerName = nameText.getText().toString();
+                        }
+                    }
+                    if(arrayList.size()==1){
+                        playerPositionText.setText("");
+                        playerPointsText.setText("");
+                        nameText.setText("");
+
+                        playerPosition = playerPositionText.getText().toString();
+                        playerPoints = playerPointsText.getText().toString();
+                        playerName = nameText.getText().toString();
+
+                        Toast myToast = Toast.makeText(MainActivity.this, "There are no more players left in the 2019-20 NBA MVP Race!",Toast.LENGTH_LONG);
+                        myToast.show();
+                    }
+                    arrayList.remove(position);
                     removeMethod();
                 }
             });
@@ -161,6 +212,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(PPGKEY, playerPoints);
         outState.putString(POSITIONKEY, playerPosition);
         outState.putString(NAMEKEY, playerName);
-       // outState.putParcelableArrayList(LISTKEY, playerList);
+        outState.putSerializable(LISTKEY, playerList);
     }
 }

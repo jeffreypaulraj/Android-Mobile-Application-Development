@@ -8,9 +8,10 @@
 
     <ListView
         android:id="@+id/teamListView"
-        android:layout_width="599dp"
-        android:layout_height="200dp"
+        android:layout_width="440dp"
+        android:layout_height="202dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.031"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,4 +49,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/teamListView" />
+
+    <TextView
+        android:id="@+id/contextTextView"
+        android:layout_width="167dp"
+        android:layout_height="196dp"
+        android:text="Hi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/teamListView"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
