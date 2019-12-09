@@ -54,8 +54,9 @@
         android:id="@+id/contextTextView"
         android:layout_width="167dp"
         android:layout_height="196dp"
-        android:text="Hi"
+        android:text="About this MVP Candidate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/teamListView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

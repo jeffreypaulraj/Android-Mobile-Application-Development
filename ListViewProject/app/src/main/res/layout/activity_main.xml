@@ -8,8 +8,8 @@
 
     <ListView
         android:id="@+id/teamListView"
-        android:layout_width="422dp"
-        android:layout_height="402dp"
+        android:layout_width="417dp"
+        android:layout_height="440dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
