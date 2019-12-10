@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     String playerName = "";
     String playerPosition = "";
     String playerPoints = "";
+    String playerExtra = "";
     TextView playerPositionText;
     TextView playerPointsText;
     TextView nameText;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String POSITIONKEY = "poskey";
     public static final String LISTKEY = "lstkey";
     public static final String NAMEKEY = "nmkey";
+    public static final String EXTRAKEY = "extkey";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +101,14 @@ public class MainActivity extends AppCompatActivity {
             playerPosition = savedInstanceState.getString(POSITIONKEY);
             playerName = savedInstanceState.getString(NAMEKEY);
             playerList = (ArrayList<Player>)savedInstanceState.getSerializable(LISTKEY);
+            playerExtra = savedInstanceState.getString(EXTRAKEY);
 
             playerPointsText.setText(playerPoints);
             playerPositionText.setText(playerPosition);
             nameText.setText(playerName);
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+               contentText.setText(playerExtra);
+            }
 
         }
 
@@ -180,6 +186,8 @@ public class MainActivity extends AppCompatActivity {
                     playerPosition = playerPositionText.getText().toString();
                     playerPoints = playerPointsText.getText().toString();
                     playerName = nameText.getText().toString();
+                    playerExtra = playerList.get(position).getExtra();
+
 
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                     contentText.setText(playerList.get(position).getExtra());
@@ -202,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
                             playerPosition = playerPositionText.getText().toString();
                             playerPoints = playerPointsText.getText().toString();
                             playerName = nameText.getText().toString();
+                            playerExtra = playerList.get(0).getExtra();
                         }
                         else{
                             playerPositionText.setText("Position: " + playerList.get(position+1).getPosition());
@@ -214,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
                             playerPosition = playerPositionText.getText().toString();
                             playerPoints = playerPointsText.getText().toString();
                             playerName = nameText.getText().toString();
+                            playerExtra = playerList.get(position+1).getExtra();
+
                         }
                     }
                     if(arrayList.size()==1){
@@ -249,5 +260,6 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(POSITIONKEY, playerPosition);
         outState.putString(NAMEKEY, playerName);
         outState.putSerializable(LISTKEY, playerList);
+        outState.putString(EXTRAKEY, playerExtra);
     }
 }
