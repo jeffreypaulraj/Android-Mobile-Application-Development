@@ -6,8 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,17 +83,17 @@ public class MainActivity extends AppCompatActivity {
         extraContentList.add("Karl-Anthony Towns is arguablt the best center in the NBA following the inconsistency of Joel Embiid and Nikola Jokic. He has led the Timberwolves" +
                 "from a joke of a franchise to a 0.500 team");
 
-        playerList.add(new Player("Kawhi Leonard", "SF", 25.9, R.drawable.kawhi, extraContentList.get(0)));
-        playerList.add(new Player("Giannis Antetokounmpo", "PF", 30.8, R.drawable.giannis, extraContentList.get(1)));
-        playerList.add(new Player("James Harden", "PF",39.5, R.drawable.harden, extraContentList.get(2)));
-        playerList.add(new Player("Luka Doncic", "SF",33.8, R.drawable.luka, extraContentList.get(3)));
-        playerList.add(new Player("Lebron James", "SF",25.6, R.drawable.lebron, extraContentList.get(4)));
-        playerList.add(new Player("Jimmy Butler", "SF",19.0, R.drawable.jimmy, extraContentList.get(5)));
-        playerList.add(new Player("Anthony Davis", "PF",26.1, R.drawable.anthony, extraContentList.get(6)));
-        playerList.add(new Player("Pascal Siakam", "PF",25.1, R.drawable.pascal, extraContentList.get(7)));
-        playerList.add(new Player("Damian Lillard", "PG",26.7, R.drawable.damian,extraContentList.get(8)));
-        playerList.add(new Player("Paul George", "SF",23.5, R.drawable.paul, extraContentList.get(9)));
-        playerList.add(new Player("Karl-Anthony Towns", "C",25.9, R.drawable.karl, extraContentList.get(10)));
+        playerList.add(new Player("Kawhi Leonard", "SF", 25.9, R.drawable.kawhi, extraContentList.get(0), "https://www.espn.com/nba/player/_/id/6450/kawhi-leonard"));
+        playerList.add(new Player("Giannis Antetokounmpo", "PF", 30.8, R.drawable.giannis, extraContentList.get(1), "https://www.espn.com/nba/player/_/id/3032977/giannis-antetokounmpo"));
+        playerList.add(new Player("James Harden", "PF",39.5, R.drawable.harden, extraContentList.get(2), "https://www.espn.com/nba/player/_/id/3992/james-harden"));
+        playerList.add(new Player("Luka Doncic", "SF",33.8, R.drawable.luka, extraContentList.get(3), "https://www.espn.com/nba/player/_/id/3945274/luka-doncic"));
+        playerList.add(new Player("Lebron James", "SF",25.6, R.drawable.lebron, extraContentList.get(4), "https://www.espn.com/nba/player/_/id/1966/lebron-james"));
+        playerList.add(new Player("Jimmy Butler", "SF",19.0, R.drawable.jimmy, extraContentList.get(5), "https://www.espn.com/nba/player/_/id/6430/jimmy-butler"));
+        playerList.add(new Player("Anthony Davis", "PF",26.1, R.drawable.anthony, extraContentList.get(6), "https://www.espn.com/nba/player/_/id/6583/anthony-davis"));
+        playerList.add(new Player("Pascal Siakam", "PF",25.1, R.drawable.pascal, extraContentList.get(7),"https://www.espn.com/nba/player/_/id/3149673/pascal-siakam"));
+        playerList.add(new Player("Damian Lillard", "PG",26.7, R.drawable.damian,extraContentList.get(8),"https://www.espn.com/nba/player/_/id/6606/damian-lillard"));
+        playerList.add(new Player("Paul George", "SF",23.5, R.drawable.paul, extraContentList.get(9),"https://www.espn.com/nba/player/_/id/4251/paul-george"));
+        playerList.add(new Player("Karl-Anthony Towns", "C",25.9, R.drawable.karl, extraContentList.get(10),"https://www.espn.com/nba/player/_/id/3136195/karl-anthony-towns"));
 
 
 
@@ -125,13 +128,15 @@ public class MainActivity extends AppCompatActivity {
         Double points;
         int image;
         String extra;
+        String url;
 
-        public Player(String name, String position, Double points, int image, String extra){
+        public Player(String name, String position, Double points, int image, String extra, String url){
             this.name = name;
             this.position = position;
             this.points = points;
             this.image = image;
             this.extra = extra;
+            this.url = url;
         }
 
         public String getName(){
@@ -147,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
             return image;
         }
         public String getExtra() {return extra;}
+        public String getUrl(){return url;}
+
     }
 
     public class CustomAdapter extends ArrayAdapter<Player>{
@@ -175,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
             nameButton.setText("" + playerList.get(position).getName());
 
             Button removeButton = view.findViewById(R.id.id_adapter_removeButton);
-
+            removeButton.setBackgroundResource(R.drawable.remove);
             nameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -188,6 +195,8 @@ public class MainActivity extends AppCompatActivity {
                     playerName = nameText.getText().toString();
                     playerExtra = playerList.get(position).getExtra();
 
+                    Toast espnToast = Toast.makeText(MainActivity.this, "Click on " + playerList.get(position).getName() + " for his most recent stats and highlights!", Toast.LENGTH_LONG);
+                    espnToast.show();
 
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                     contentText.setText(playerList.get(position).getExtra());
@@ -195,43 +204,53 @@ public class MainActivity extends AppCompatActivity {
                     }
             });
 
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String url = playerList.get(position).getUrl();
+
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+            });
+
             removeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(arrayList.get(position).getName().equals(nameText.getText().toString())){
-                        if(position == arrayList.size() - 1){
+                    if (arrayList.get(position).getName().equals(nameText.getText().toString())) {
+                        if (position == arrayList.size() - 1) {
                             playerPositionText.setText("Position: " + playerList.get(0).getPosition());
                             playerPointsText.setText("Points Per Game: " + playerList.get(0).getPoints());
-                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                                 contentText.setText(playerList.get(0).getExtra());
                             }
                             nameText.setText(playerList.get(0).getName());
-
                             playerPosition = playerPositionText.getText().toString();
                             playerPoints = playerPointsText.getText().toString();
                             playerName = nameText.getText().toString();
                             playerExtra = playerList.get(0).getExtra();
-                        }
-                        else{
-                            playerPositionText.setText("Position: " + playerList.get(position+1).getPosition());
-                            playerPointsText.setText("Points Per Game: " + playerList.get(position+1).getPoints());
-                            nameText.setText(playerList.get(position+1).getName());
-                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                                contentText.setText(playerList.get(position+1).getExtra());
+                        } else {
+                            playerPositionText.setText("Position: " + playerList.get(position + 1).getPosition());
+                            playerPointsText.setText("Points Per Game: " + playerList.get(position + 1).getPoints());
+                            nameText.setText(playerList.get(position + 1).getName());
+                            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                                contentText.setText(playerList.get(position + 1).getExtra());
                             }
 
                             playerPosition = playerPositionText.getText().toString();
                             playerPoints = playerPointsText.getText().toString();
                             playerName = nameText.getText().toString();
-                            playerExtra = playerList.get(position+1).getExtra();
+                            playerExtra = playerList.get(position + 1).getExtra();
 
                         }
                     }
-                    if(arrayList.size()==1){
+                    if (arrayList.size() == 1) {
                         playerPositionText.setText("");
                         playerPointsText.setText("");
                         nameText.setText("");
-                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
                             contentText.setText("No More MVP Candidates");
                         }
 
@@ -239,14 +258,14 @@ public class MainActivity extends AppCompatActivity {
                         playerPoints = playerPointsText.getText().toString();
                         playerName = nameText.getText().toString();
 
-                        Toast myToast = Toast.makeText(MainActivity.this, "There are no more players left in the 2019-20 NBA MVP Race!",Toast.LENGTH_LONG);
+                        Toast myToast = Toast.makeText(MainActivity.this, "There are no more players left in the 2019-20 NBA MVP Race!", Toast.LENGTH_LONG);
                         myToast.show();
                     }
                     arrayList.remove(position);
                     extraContentList.remove(position);
                     removeMethod();
-                }
-            });
+                        }
+                    });
 
             return view;
         }
