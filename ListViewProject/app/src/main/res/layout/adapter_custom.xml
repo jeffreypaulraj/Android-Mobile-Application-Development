@@ -21,6 +21,7 @@
 
     <Button
         android:id="@+id/id_adapter_removeButton"
+        android:text="Remove"
         android:layout_width="3dp"
         android:layout_height="61dp"
         android:layout_weight="1"

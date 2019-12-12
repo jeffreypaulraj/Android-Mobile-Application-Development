@@ -9,12 +9,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         extraContentList.add("Kawhi Leonard is one of the best two-way players in the NBA. After leading the Toronto Raptors to winning the 2019 NBA Championship, he is now playing" +
-                "for the Los Angeles Clippers, alongside the likes of Paul George, Patrick Beverly, and Lou Williams");
+                " for the Los Angeles Clippers, alongside the likes of Paul George, Patrick Beverly, and Lou Williams");
         extraContentList.add("Giannis Antetokounmpo, aka the Greek Freak, is the reigning MVP coming into the 2019-20 NBA Season. With Kawhi out of the Easter" +
                 "Conference, he is set to lead the Milwaukee Bucks to the top of the Eastern Conference with both his offensive and defensive play");
         extraContentList.add("James Harden is arguably the greatest scorer of our era. His ability to make 3s and get foul calls consistently is uncanny." +
@@ -180,12 +183,16 @@ public class MainActivity extends AppCompatActivity {
             image.setImageResource(playerList.get(position).getImage());
             Button nameButton = view.findViewById(R.id.id_adapter_nameButton);
             nameButton.setText("" + playerList.get(position).getName());
+            nameButton.getBackground().setAlpha(0);
 
             Button removeButton = view.findViewById(R.id.id_adapter_removeButton);
-            removeButton.setBackgroundResource(R.drawable.remove);
+            removeButton.setTextColor(Color.RED);
+            removeButton.getBackground().setAlpha(0);
+
+
             nameButton.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
+                public void onClick(View view) {
                     playerPositionText.setText("Position: " + playerList.get(position).getPosition());
                     playerPointsText.setText("Points Per Game: " + playerList.get(position).getPoints());
                     nameText.setText(playerList.get(position).getName());
@@ -195,24 +202,31 @@ public class MainActivity extends AppCompatActivity {
                     playerName = nameText.getText().toString();
                     playerExtra = playerList.get(position).getExtra();
 
-                    Toast espnToast = Toast.makeText(MainActivity.this, "Click on " + playerList.get(position).getName() + " for his most recent stats and highlights!", Toast.LENGTH_LONG);
+                    Toast espnToast = Toast.makeText(MainActivity.this, "Click on " + playerList.get(position).getName() + " for his most recent stats and highlights!", Toast.LENGTH_SHORT);
+                    espnToast.setGravity(Gravity.TOP| Gravity.CENTER_HORIZONTAL, 0, 0);
                     espnToast.show();
 
                     if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    contentText.setText(playerList.get(position).getExtra());
+                        contentText.setText(playerList.get(position).getExtra());
                     }
-                    }
-            });
+                }
+                });
 
+            teamListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    System.out.println("I have been clicked");
+                    teamListView.getChildAt(position).setBackgroundColor(Color.BLUE);
+                }
+            });
             image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     String url = playerList.get(position).getUrl();
 
-                    Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
-                    startActivity(i);
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+
                 }
             });
 
