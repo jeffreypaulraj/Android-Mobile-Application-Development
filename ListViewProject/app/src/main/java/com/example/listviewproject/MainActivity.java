@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 "ended the OKC Thunder franchise as we once knew it with his 37-foot 3-point dagger. ");
         extraContentList.add("Paul George is now playing alongside Kawhi Leonard, creating one of the most fearsome defensive duos in the NBA. George has come" +
                 "strong off of a shoulder injury, and has given consistent strong play when Leonard doesn't play due to 'load management'.");
-        extraContentList.add("Karl-Anthony Towns is arguablt the best center in the NBA following the inconsistency of Joel Embiid and Nikola Jokic. He has led the Timberwolves" +
+        extraContentList.add("Karl-Anthony Towns is arguably the best center in the NBA following the inconsistency of Joel Embiid and Nikola Jokic. He has led the Timberwolves" +
                 "from a joke of a franchise to a 0.500 team");
 
         playerList.add(new Player("Kawhi Leonard", "SF", 25.9, R.drawable.kawhi, extraContentList.get(0), "https://www.espn.com/nba/player/_/id/6450/kawhi-leonard"));
@@ -114,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
             nameText.setText(playerName);
             if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
                contentText.setText(playerExtra);
+               if(playerList.size()==0){
+                   contentText.setText("");
+               }
             }
 
         }
