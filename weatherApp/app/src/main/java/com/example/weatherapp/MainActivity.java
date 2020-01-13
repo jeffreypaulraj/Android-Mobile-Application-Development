@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -25,17 +27,14 @@ import javax.xml.transform.Result;
 
 public class MainActivity extends AppCompatActivity {
 
-    URL apiURL;
-    URLConnection apiConnection;
-    InputStream apiInputStream;
-    BufferedReader apiBufferedReader;
     String zipcode;
-    String receiveInfo;
     AsyncThread myThread;
     TextView mainTemperatureText;
     Button enterZipCodeButton;
     EditText enterZipCodeField;
     Double mainTemperature;
+    Switch HourlyDailySwitch;
+    boolean isHourly;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +42,15 @@ public class MainActivity extends AppCompatActivity {
         mainTemperatureText = findViewById(R.id.id_mainTempText);
         enterZipCodeButton = findViewById(R.id.id_enterZipCodeButton);
         enterZipCodeField = findViewById(R.id.id_zipCodeEnter);
+        HourlyDailySwitch = findViewById(R.id.id_hourlyDailySwitch);
 
-        receiveInfo = "";
-
+        isHourly = false;
+        HourlyDailySwitch.setChecked(true);
+        HourlyDailySwitch.setText("Daily");
         enterZipCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HourlyDailySwitch.setChecked(true);
                 zipcode = enterZipCodeField.getText().toString();
                 myThread = new AsyncThread();
                 myThread.execute(zipcode);
@@ -57,49 +59,59 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        HourlyDailySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isHourly){
+                    HourlyDailySwitch.setText("Hourly");
+                }
+                else{
+                    HourlyDailySwitch.setText("Daily");
+                }
+                isHourly = isChecked;
+            }
+        });
 
 
     }
 
-    public class AsyncThread extends AsyncTask<String, Integer, Double> {
+    public class AsyncThread extends AsyncTask<String, Void, JSONObject> {
 
         @Override
-        protected Double doInBackground(String... strings) {
-                zipcode = strings[0];
-                System.out.println("zipcode:" + zipcode);
+        protected JSONObject doInBackground(String... strings) {
+            String zipcodeSync = strings[0];
             try {
-                apiURL = new URL("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipcode + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
-                apiConnection = apiURL.openConnection();
-                System.out.println("apiconn:" + apiConnection);
-                apiInputStream = apiConnection.getInputStream();
-
-                apiBufferedReader = new BufferedReader(new InputStreamReader(apiInputStream));
-                while(apiBufferedReader.readLine() != null){
-                    System.out.println("info: " + receiveInfo);
-                    receiveInfo+=apiBufferedReader.readLine();
+                URL apiURL = new URL("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipcodeSync + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
+                URLConnection apiConnection = apiURL.openConnection();
+                InputStream apiInputStream = apiConnection.getInputStream();
+                BufferedReader apiBufferedReader = new BufferedReader(new InputStreamReader(apiInputStream));
+                String receiveInfo = "";
+                String line = "";
+                while((line = apiBufferedReader.readLine()) != null){
+                    receiveInfo+=line;
                 }
-
+                JSONObject weatherObject = new JSONObject(receiveInfo);
+                return weatherObject;
             } catch (Exception e){
                 e.printStackTrace();
             }
-
-            System.out.println("mainTemp: " + mainTemperature);
-            return mainTemperature;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(Double result) {
-            super.onPostExecute(result);
+        protected void onPostExecute(JSONObject objectOne) {
+
             try {
-                System.out.println("receiveInfo:" + receiveInfo);
-                JSONObject weatherInfo = new JSONObject(receiveInfo);
-                JSONObject mainInfo = weatherInfo.getJSONArray("list").getJSONObject(0);
-                System.out.println("Weather: " + weatherInfo.toString());
+                JSONObject weatherInfo = objectOne;
+                JSONObject mainInfo = weatherInfo.getJSONArray("list").getJSONObject(0).getJSONObject("main");
+                System.out.println("main info: " + mainInfo);
                 mainTemperature = mainInfo.getDouble("temp");
                 System.out.println("Temperature: " + mainTemperature);
                 mainTemperatureText.setText("Temperature: " + mainTemperature);
-            }catch(Exception e){
+                System.out.println(objectOne);
 
+            }catch(Exception e){
+                e.printStackTrace();
             }
         }
     }
