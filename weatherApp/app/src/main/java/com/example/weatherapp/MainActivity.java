@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.stream.Collectors;
+
+import javax.xml.transform.Result;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 zipcode = enterZipCodeField.getText().toString();
                 myThread = new AsyncThread();
                 myThread.execute(zipcode);
+                System.out.println("Thread: " + myThread.toString());
 
             }
         });
@@ -57,34 +61,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class AsyncThread extends AsyncTask<String, Void, Void> {
+    public class AsyncThread extends AsyncTask<String, Integer, Double> {
 
         @Override
-        protected Void doInBackground(String... strings) {
-            zipcode = strings[0];
+        protected Double doInBackground(String... strings) {
+                zipcode = strings[0];
+                System.out.println("zipcode:" + zipcode);
             try {
                 apiURL = new URL("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipcode + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
                 apiConnection = apiURL.openConnection();
+                System.out.println("apiconn:" + apiConnection);
                 apiInputStream = apiConnection.getInputStream();
+
                 apiBufferedReader = new BufferedReader(new InputStreamReader(apiInputStream));
                 while(apiBufferedReader.readLine() != null){
+                    System.out.println("info: " + receiveInfo);
                     receiveInfo+=apiBufferedReader.readLine();
                 }
 
             } catch (Exception e){
-
+                e.printStackTrace();
             }
 
-            return null;
+            System.out.println("mainTemp: " + mainTemperature);
+            return mainTemperature;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
+        protected void onPostExecute(Double result) {
+            super.onPostExecute(result);
             try {
+                System.out.println("receiveInfo:" + receiveInfo);
                 JSONObject weatherInfo = new JSONObject(receiveInfo);
                 JSONObject mainInfo = weatherInfo.getJSONArray("list").getJSONObject(0);
+                System.out.println("Weather: " + weatherInfo.toString());
                 mainTemperature = mainInfo.getDouble("temp");
+                System.out.println("Temperature: " + mainTemperature);
                 mainTemperatureText.setText("Temperature: " + mainTemperature);
             }catch(Exception e){
 
