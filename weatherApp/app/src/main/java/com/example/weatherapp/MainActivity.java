@@ -22,6 +22,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
@@ -145,18 +147,21 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject timeThree = weatherInfo.getJSONArray("list").getJSONObject(3);
                 JSONObject timeFour = weatherInfo.getJSONArray("list").getJSONObject(4);
 
-                weatherList.add(new WeatherEvent(dayZero.getJSONObject("main").getDouble("temp_min"), dayZero.getJSONObject("main").getDouble("temp_max"), dayZero.getString("dt_txt"),dayZero.getJSONArray("weather").getJSONObject(0).getString("description") ));
+                String urlStart = "http://openweathermap.org/img/wn/";
+
+
+                weatherList.add(new WeatherEvent(dayZero.getJSONObject("main").getDouble("temp_min"), dayZero.getJSONObject("main").getDouble("temp_max"), dayZero.getString("dt_txt"),dayZero.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayZero.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
                 if(isHourly){
-                    weatherList.add(new WeatherEvent(timeOne.getJSONObject("main").getDouble("temp_min"), timeOne.getJSONObject("main").getDouble("temp_max"), timeOne.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(timeTwo.getJSONObject("main").getDouble("temp_min"), timeTwo.getJSONObject("main").getDouble("temp_max"), timeTwo.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(timeThree.getJSONObject("main").getDouble("temp_min"), timeThree.getJSONObject("main").getDouble("temp_max"), timeThree.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(timeFour.getJSONObject("main").getDouble("temp_min"), timeFour.getJSONObject("main").getDouble("temp_max"), timeFour.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description") ));
+                    weatherList.add(new WeatherEvent(timeOne.getJSONObject("main").getDouble("temp_min"), timeOne.getJSONObject("main").getDouble("temp_max"), timeOne.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(timeTwo.getJSONObject("main").getDouble("temp_min"), timeTwo.getJSONObject("main").getDouble("temp_max"), timeTwo.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(timeThree.getJSONObject("main").getDouble("temp_min"), timeThree.getJSONObject("main").getDouble("temp_max"), timeThree.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                    weatherList.add(new WeatherEvent(timeFour.getJSONObject("main").getDouble("temp_min"), timeFour.getJSONObject("main").getDouble("temp_max"), timeFour.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
                 }
                 else {
-                    weatherList.add(new WeatherEvent(dayOne.getJSONObject("main").getDouble("temp_min"), dayOne.getJSONObject("main").getDouble("temp_max"), dayOne.getString("dt_txt"),dayOne.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(dayTwo.getJSONObject("main").getDouble("temp_min"), dayTwo.getJSONObject("main").getDouble("temp_max"), dayTwo.getString("dt_txt"),dayTwo.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(dayThree.getJSONObject("main").getDouble("temp_min"), dayThree.getJSONObject("main").getDouble("temp_max"), dayThree.getString("dt_txt"),dayThree.getJSONArray("weather").getJSONObject(0).getString("description") ));
-                    weatherList.add(new WeatherEvent(dayFour.getJSONObject("main").getDouble("temp_min"), dayFour.getJSONObject("main").getDouble("temp_max"), dayFour.getString("dt_txt"),dayFour.getJSONArray("weather").getJSONObject(0).getString("description") ));
+                    weatherList.add(new WeatherEvent(dayOne.getJSONObject("main").getDouble("temp_min"), dayOne.getJSONObject("main").getDouble("temp_max"), dayOne.getString("dt_txt"),dayOne.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(dayTwo.getJSONObject("main").getDouble("temp_min"), dayTwo.getJSONObject("main").getDouble("temp_max"), dayTwo.getString("dt_txt"),dayTwo.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(dayThree.getJSONObject("main").getDouble("temp_min"), dayThree.getJSONObject("main").getDouble("temp_max"), dayThree.getString("dt_txt"),dayThree.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                    weatherList.add(new WeatherEvent(dayFour.getJSONObject("main").getDouble("temp_min"), dayFour.getJSONObject("main").getDouble("temp_max"), dayFour.getString("dt_txt"),dayFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
                 }
                 CustomAdapter customAdapter = new CustomAdapter(MainActivity.this, R.layout.adapter_custom, weatherList);
                 weatherListView.setAdapter(customAdapter);
@@ -170,25 +175,25 @@ public class MainActivity extends AppCompatActivity {
         }
         public class WeatherEvent{
 
-            Image image;
+            String image;
             double lowTemp;
             double highTemp;
             String dateTime;
             String description;
 
-            public WeatherEvent(double lowTemp, double highTemp, String dateTime, String description){
-                //this.image = image;
+            public WeatherEvent(double lowTemp, double highTemp, String dateTime, String description, String image){
+                this.image = image;
                 this.lowTemp = lowTemp;
                 this.highTemp = highTemp;
                 this.dateTime = dateTime;
                 this.description = description;
             }
 
-            public Image getImage() {
+            public String getImage() {
                 return image;
             }
 
-            public void setImage(Image image) {
+            public void setImage(String image) {
                 this.image = image;
             }
 
@@ -243,17 +248,17 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater layoutInflater = (LayoutInflater) parentContext.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.adapter_custom, null);
 
-                ImageView image = view.findViewById(R.id.id_adapter_imageView);
+                ImageView imageView = view.findViewById(R.id.id_adapter_imageView);
                 TextView dateTimeText = view.findViewById(R.id.id_adapter_dateTime);
                 TextView highTempText = view.findViewById(R.id.id_adapter_highTemp);
                 TextView lowTempText = view.findViewById(R.id.id_adapter_lowTemp);
                 TextView descriptionText = view.findViewById(R.id.id_adapter_descriptionText);
 
-                image.setImageResource(R.drawable.mixedweather);
+                Picasso.get().load(arrayList.get(position).getImage()).into(imageView);
                 dateTimeText.setText(arrayList.get(position).getDateTime());
                 highTempText.setText("High: " + kelvinToFahrenHeit(arrayList.get(position).getHighTemp()) + " °F");
                 lowTempText.setText("Low: " + kelvinToFahrenHeit(arrayList.get(position).getLowTemp()) + " °F");
-                descriptionText.setText(arrayList.get(position).getDescription());
+                descriptionText.setText(arrayList.get(position).getDescription().toUpperCase());
 
                 return view;
             }
