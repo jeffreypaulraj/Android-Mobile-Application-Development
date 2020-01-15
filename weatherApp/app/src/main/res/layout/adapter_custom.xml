@@ -6,7 +6,7 @@
 
     <ImageView
         android:id="@+id/id_adapter_imageView"
-        android:layout_width="422dp"
+        android:layout_width="406dp"
         android:layout_height="104dp"
         android:layout_weight="1"
         app:srcCompat="@drawable/mixedweather" />

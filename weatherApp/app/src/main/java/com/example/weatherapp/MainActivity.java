@@ -10,9 +10,11 @@ import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.URLUtil;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -92,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
         quotesList.add("Run for your chives!");
         quotesList.add("Just dill with it!");
 
-        isHourly = false;
-        HourlyDailySwitch.setChecked(true);
-        HourlyDailySwitch.setText("Daily");
+        isHourly = true;
+        HourlyDailySwitch.setChecked(false);
+        HourlyDailySwitch.setText("Hourly");
         enterZipCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,6 +132,10 @@ public class MainActivity extends AppCompatActivity {
 
     public class AsyncThread extends AsyncTask<String, Void, ArrayList<JSONObject>> {
 
+        public void showToast(){
+            Toast zipToast = Toast.makeText(MainActivity.this, "Invalid Zipcode!", Toast.LENGTH_SHORT);
+            zipToast.show();
+        }
         @Override
         protected ArrayList<JSONObject> doInBackground(String... strings) {
             String zipcodeSync = strings[0];
@@ -145,6 +152,10 @@ public class MainActivity extends AppCompatActivity {
                 }
                 JSONObject weatherObject = new JSONObject(receiveInfo);
                 list.add(weatherObject);
+
+                if(!Patterns.WEB_URL.matcher(apiURL.toString()).matches()){
+                    showToast();
+                }
 
                 URL currentURL = new URL("http://api.openweathermap.org/data/2.5/weather?zip=" + zipcodeSync + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
                 URLConnection currentConnection = currentURL.openConnection();
@@ -179,11 +190,13 @@ public class MainActivity extends AppCompatActivity {
                 mainTemperature = mainTemperature*9/5 -459.67;
                 mainTemperature = Math.round(mainTemperature*100.0)/100.0;
                 mainTemperatureText.setText(""+ mainTemperature + " °F");
+                long currentTimeStamp =  current.getLong("dt");
+                java.util.Date currentDateTime=new java.util.Date(currentTimeStamp*1000);
                 if(isHourly){
-                    mainDateTimeText.setText(new SimpleDateFormat( "hh:mm:ss a zzz").format(new java.util.Date()));
+                    mainDateTimeText.setText(new SimpleDateFormat( "hh:mm a zzz").format(currentDateTime));
                 }
                 else{
-                    mainDateTimeText.setText(new SimpleDateFormat("EEEE, MMMM d, yyyy").format(new java.util.Date()));
+                    mainDateTimeText.setText(new SimpleDateFormat("EEEE, MMMM d, yyyy").format(currentDateTime));
                 }
                 cityText.setText(current.getString("name").toUpperCase());
                 mainDescriptionText.setText(current.getJSONArray("weather").getJSONObject(0).getString("description").toUpperCase());
@@ -236,18 +249,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                weatherList.add(new WeatherEvent(dayZero.getJSONObject("main").getDouble("temp_min"), dayZero.getJSONObject("main").getDouble("temp_max"), dayZero.getString("dt_txt"),dayZero.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayZero.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                weatherList.add(new WeatherEvent(dayZero.getJSONObject("main").getDouble("temp_min"), dayZero.getJSONObject("main").getDouble("temp_max"), dayZero.getLong("dt"),dayZero.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayZero.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
                 if(isHourly){
-                    weatherList.add(new WeatherEvent(timeOne.getJSONObject("main").getDouble("temp_min"), timeOne.getJSONObject("main").getDouble("temp_max"), timeOne.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
-                    weatherList.add(new WeatherEvent(timeTwo.getJSONObject("main").getDouble("temp_min"), timeTwo.getJSONObject("main").getDouble("temp_max"), timeTwo.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
-                    weatherList.add(new WeatherEvent(timeThree.getJSONObject("main").getDouble("temp_min"), timeThree.getJSONObject("main").getDouble("temp_max"), timeThree.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
-                    weatherList.add(new WeatherEvent(timeFour.getJSONObject("main").getDouble("temp_min"), timeFour.getJSONObject("main").getDouble("temp_max"), timeFour.getString("dt_txt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(timeOne.getJSONObject("main").getDouble("temp_min"), timeOne.getJSONObject("main").getDouble("temp_max"), timeOne.getLong("dt"),timeOne.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(timeTwo.getJSONObject("main").getDouble("temp_min"), timeTwo.getJSONObject("main").getDouble("temp_max"), timeTwo.getLong("dt"),timeTwo.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(timeThree.getJSONObject("main").getDouble("temp_min"), timeThree.getJSONObject("main").getDouble("temp_max"), timeThree.getLong("dt"),timeThree.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                    weatherList.add(new WeatherEvent(timeFour.getJSONObject("main").getDouble("temp_min"), timeFour.getJSONObject("main").getDouble("temp_max"), timeFour.getLong("dt"),timeFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + timeFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
                 }
                 else {
-                    weatherList.add(new WeatherEvent(dayOne.getJSONObject("main").getDouble("temp_min"), dayOne.getJSONObject("main").getDouble("temp_max"), dayOne.getString("dt_txt"),dayOne.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
-                    weatherList.add(new WeatherEvent(dayTwo.getJSONObject("main").getDouble("temp_min"), dayTwo.getJSONObject("main").getDouble("temp_max"), dayTwo.getString("dt_txt"),dayTwo.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
-                    weatherList.add(new WeatherEvent(dayThree.getJSONObject("main").getDouble("temp_min"), dayThree.getJSONObject("main").getDouble("temp_max"), dayThree.getString("dt_txt"),dayThree.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
-                    weatherList.add(new WeatherEvent(dayFour.getJSONObject("main").getDouble("temp_min"), dayFour.getJSONObject("main").getDouble("temp_max"), dayFour.getString("dt_txt"),dayFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                    weatherList.add(new WeatherEvent(dayOne.getJSONObject("main").getDouble("temp_min"), dayOne.getJSONObject("main").getDouble("temp_max"), dayOne.getLong("dt"),dayOne.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayOne.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(dayTwo.getJSONObject("main").getDouble("temp_min"), dayTwo.getJSONObject("main").getDouble("temp_max"), dayTwo.getLong("dt"),dayTwo.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayTwo.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png" ));
+                    weatherList.add(new WeatherEvent(dayThree.getJSONObject("main").getDouble("temp_min"), dayThree.getJSONObject("main").getDouble("temp_max"), dayThree.getLong("dt"),dayThree.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayThree.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
+                    weatherList.add(new WeatherEvent(dayFour.getJSONObject("main").getDouble("temp_min"), dayFour.getJSONObject("main").getDouble("temp_max"), dayFour.getLong("dt"),dayFour.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayFour.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
                 }
                 CustomAdapter customAdapter = new CustomAdapter(MainActivity.this, R.layout.adapter_custom, weatherList);
                 weatherListView.setAdapter(customAdapter);
@@ -264,10 +277,10 @@ public class MainActivity extends AppCompatActivity {
             String image;
             double lowTemp;
             double highTemp;
-            String dateTime;
+            Long dateTime;
             String description;
 
-            public WeatherEvent(double lowTemp, double highTemp, String dateTime, String description, String image){
+            public WeatherEvent(double lowTemp, double highTemp, Long dateTime, String description, String image){
                 this.image = image;
                 this.lowTemp = lowTemp;
                 this.highTemp = highTemp;
@@ -287,7 +300,7 @@ public class MainActivity extends AppCompatActivity {
                 return highTemp;
             }
 
-            public String getDateTime() {
+            public Long getDateTime() {
                 return dateTime;
             }
 
@@ -321,8 +334,11 @@ public class MainActivity extends AppCompatActivity {
                 TextView lowTempText = view.findViewById(R.id.id_adapter_lowTemp);
                 TextView descriptionText = view.findViewById(R.id.id_adapter_descriptionText);
 
+                long timeStamp =  arrayList.get(position).getDateTime();
+                java.util.Date time=new java.util.Date(timeStamp*1000);
+                String timeFormat = new SimpleDateFormat("EEE, MMM d, hh:mm aaa z").format(time);
                 Picasso.get().load(arrayList.get(position).getImage()).into(imageView);
-                dateTimeText.setText(arrayList.get(position).getDateTime());
+                dateTimeText.setText("" + timeFormat);
                 highTempText.setText("High: " + kelvinToFahrenHeit(arrayList.get(position).getHighTemp()) + " °F");
                 lowTempText.setText("Low: " + kelvinToFahrenHeit(arrayList.get(position).getLowTemp()) + " °F");
                 descriptionText.setText(arrayList.get(position).getDescription().toUpperCase());
