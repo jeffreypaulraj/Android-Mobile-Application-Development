@@ -55,7 +55,10 @@ public class MainActivity extends AppCompatActivity {
     TextView cityText;
     TextView mainDescriptionText;
     ImageView mainImage;
+    TextView quotesText;
     boolean isHourly;
+    ImageView bottomImage;
+    ArrayList<String> quotesList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +72,25 @@ public class MainActivity extends AppCompatActivity {
         cityText = findViewById(R.id.id_cityText);
         mainDescriptionText = findViewById(R.id.id_mainDescriptionText);
         mainImage = findViewById(R.id.imageView);
+        bottomImage = findViewById(R.id.id_bottomImage);
+        quotesText = findViewById(R.id.id_quoteText);
 
+        bottomImage.setImageResource(R.drawable.bottomcloudypic);
         HourlyDailySwitch.setVisibility(View.INVISIBLE);
+        bottomImage.setVisibility(View.INVISIBLE);
+
+
+        quotesList = new ArrayList<>();
+        quotesList.add("Bring out the fruit cockatiels!");
+        quotesList.add("Come on, Steve. We've got a diem to carpe!");
+        quotesList.add("Not every sardine was meant to swim, son");
+        quotesList.add("AHHH! There's a leek in the boat!");
+        quotesList.add("You may have seen a meteor shower, but I bet you've never seen a shower 'meatier' than this");
+        quotesList.add("When it rains, you put on a coat. Of SPRAY-ON SHOES!");
+        quotesList.add("It's enough to make a grown man cry... But not this man!");
+        quotesList.add("With flurries of frozen fun on what the mayor declared to be an ice cream snow day!");
+        quotesList.add("Run for your chives!");
+        quotesList.add("Just dill with it!");
 
         isHourly = false;
         HourlyDailySwitch.setChecked(true);
@@ -79,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 HourlyDailySwitch.setVisibility(View.VISIBLE);
+                bottomImage.setVisibility(View.VISIBLE);
                 HourlyDailySwitch.setChecked(true);
                 zipcode = enterZipCodeField.getText().toString();
                 myThread = new AsyncThread();
@@ -167,8 +188,37 @@ public class MainActivity extends AppCompatActivity {
                 cityText.setText(current.getString("name").toUpperCase());
                 mainDescriptionText.setText(current.getJSONArray("weather").getJSONObject(0).getString("description").toUpperCase());
                 Picasso.get().load(urlStart + current.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png").into(mainImage);
-
-
+                String mainIcon= current.getJSONArray("weather").getJSONObject(0).getString("icon");
+                if(mainIcon.equals("01d")|| mainIcon.equals("01n")){
+                    quotesText.setText(quotesList.get(0));
+                }
+                else if(mainIcon.equals("02d")|| mainIcon.equals("02n")){
+                    quotesText.setText(quotesList.get(1));
+                }
+                else if(mainIcon.equals("03d")|| mainIcon.equals("03n")){
+                    quotesText.setText(quotesList.get(2));
+                }
+                else if(mainIcon.equals("04d")|| mainIcon.equals("04n")){
+                    quotesText.setText(quotesList.get(3));
+                }
+                else if(mainIcon.equals("09d")|| mainIcon.equals("09n")){
+                    quotesText.setText(quotesList.get(4));
+                }
+                else if(mainIcon.equals("10d")|| mainIcon.equals("10n")){
+                    quotesText.setText(quotesList.get(5));
+                }
+                else if(mainIcon.equals("11d")|| mainIcon.equals("11n")){
+                    quotesText.setText(quotesList.get(6));
+                }
+                else if(mainIcon.equals("13d")|| mainIcon.equals("13n")){
+                    quotesText.setText(quotesList.get(7));
+                }
+                else if(mainIcon.equals("50d")|| mainIcon.equals("50n")){
+                    quotesText.setText(quotesList.get(8));
+                }
+                else{
+                    quotesText.setText(quotesList.get(9));
+                }
 
                 ArrayList<WeatherEvent> weatherList = new ArrayList<>();
 
