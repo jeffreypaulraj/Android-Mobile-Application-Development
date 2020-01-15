@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     Switch HourlyDailySwitch;
     ListView weatherListView;
     TextView mainDateTimeText;
+    TextView cityText;
+    TextView mainDescriptionText;
+    ImageView mainImage;
     boolean isHourly;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
         HourlyDailySwitch = findViewById(R.id.id_hourlyDailySwitch);
         weatherListView = findViewById(R.id.id_weatherListView);
         mainDateTimeText = findViewById(R.id.id_mainDateTimeText);
+        cityText = findViewById(R.id.id_cityText);
+        mainDescriptionText = findViewById(R.id.id_mainDescriptionText);
+        mainImage = findViewById(R.id.imageView);
+
+        HourlyDailySwitch.setVisibility(View.INVISIBLE);
 
         isHourly = false;
         HourlyDailySwitch.setChecked(true);
@@ -69,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         enterZipCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                HourlyDailySwitch.setVisibility(View.VISIBLE);
                 HourlyDailySwitch.setChecked(true);
                 zipcode = enterZipCodeField.getText().toString();
                 myThread = new AsyncThread();
@@ -96,11 +106,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class AsyncThread extends AsyncTask<String, Void, JSONObject> {
+    public class AsyncThread extends AsyncTask<String, Void, ArrayList<JSONObject>> {
 
         @Override
-        protected JSONObject doInBackground(String... strings) {
+        protected ArrayList<JSONObject> doInBackground(String... strings) {
             String zipcodeSync = strings[0];
+            ArrayList<JSONObject> list = new ArrayList<>();
             try {
                 URL apiURL = new URL("http://api.openweathermap.org/data/2.5/forecast?zip=" + zipcodeSync + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
                 URLConnection apiConnection = apiURL.openConnection();
@@ -112,30 +123,56 @@ public class MainActivity extends AppCompatActivity {
                     receiveInfo+=line;
                 }
                 JSONObject weatherObject = new JSONObject(receiveInfo);
-                return weatherObject;
+                list.add(weatherObject);
+
+                URL currentURL = new URL("http://api.openweathermap.org/data/2.5/weather?zip=" + zipcodeSync + "&APPID=5a115e37dbb80b0aa57cae664d0ff4fa");
+                URLConnection currentConnection = currentURL.openConnection();
+                InputStream currentInputStream = currentConnection.getInputStream();
+                BufferedReader currentBufferedReader = new BufferedReader(new InputStreamReader(currentInputStream));
+                String currentReceiveInfo = "";
+                String currentline = "";
+                while((currentline = currentBufferedReader.readLine()) != null){
+                    currentReceiveInfo+=currentline;
+                }
+                JSONObject currentWeatherObject = new JSONObject(currentReceiveInfo);
+                list.add(currentWeatherObject);
+
+
+                return list;
             } catch (Exception e){
                 e.printStackTrace();
             }
+
             return null;
         }
 
         @Override
-        protected void onPostExecute(JSONObject objectOne) {
+        protected void onPostExecute(ArrayList<JSONObject> list) {
 
             try {
-                JSONObject weatherInfo = objectOne;
-                JSONObject mainInfo = weatherInfo.getJSONArray("list").getJSONObject(0).getJSONObject("main");
-                JSONObject dayZero = weatherInfo.getJSONArray("list").getJSONObject(0);
-                mainTemperature = mainInfo.getDouble("temp");
+                JSONObject weatherInfo = list.get(0);
+                JSONObject current = list.get(1);
+                mainTemperature = current.getJSONObject("main").getDouble("temp");
+                String urlStart = "http://openweathermap.org/img/wn/";
+
                 mainTemperature = mainTemperature*9/5 -459.67;
                 mainTemperature = Math.round(mainTemperature*100.0)/100.0;
                 mainTemperatureText.setText(""+ mainTemperature + " °F");
-                mainDateTimeText.setText(dayZero.getString("dt_txt"));
+                if(isHourly){
+                    mainDateTimeText.setText(new SimpleDateFormat( "hh:mm:ss a zzz").format(new java.util.Date()));
+                }
+                else{
+                    mainDateTimeText.setText(new SimpleDateFormat("EEEE, MMMM d, yyyy").format(new java.util.Date()));
+                }
+                cityText.setText(current.getString("name").toUpperCase());
+                mainDescriptionText.setText(current.getJSONArray("weather").getJSONObject(0).getString("description").toUpperCase());
+                Picasso.get().load(urlStart + current.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png").into(mainImage);
 
-                System.out.println(objectOne);
+
 
                 ArrayList<WeatherEvent> weatherList = new ArrayList<>();
 
+                JSONObject dayZero = weatherInfo.getJSONArray("list").getJSONObject(0);
 
                 JSONObject dayOne = weatherInfo.getJSONArray("list").getJSONObject(8);
                 JSONObject dayTwo = weatherInfo.getJSONArray("list").getJSONObject(16);
@@ -147,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject timeThree = weatherInfo.getJSONArray("list").getJSONObject(3);
                 JSONObject timeFour = weatherInfo.getJSONArray("list").getJSONObject(4);
 
-                String urlStart = "http://openweathermap.org/img/wn/";
 
 
                 weatherList.add(new WeatherEvent(dayZero.getJSONObject("main").getDouble("temp_min"), dayZero.getJSONObject("main").getDouble("temp_max"), dayZero.getString("dt_txt"),dayZero.getJSONArray("weather").getJSONObject(0).getString("description"), urlStart + dayZero.getJSONArray("weather").getJSONObject(0).getString("icon") + ".png"));
@@ -193,41 +229,22 @@ public class MainActivity extends AppCompatActivity {
                 return image;
             }
 
-            public void setImage(String image) {
-                this.image = image;
-            }
-
             public double getLowTemp() {
                 return lowTemp;
-            }
-
-            public void setLowTemp(double lowTemp) {
-                this.lowTemp = lowTemp;
             }
 
             public double getHighTemp() {
                 return highTemp;
             }
 
-            public void setHighTemp(double highTemp) {
-                this.highTemp = highTemp;
-            }
-
             public String getDateTime() {
                 return dateTime;
-            }
-
-            public void setDateTime(String dateTime) {
-                this.dateTime = dateTime;
             }
 
             public String getDescription() {
                 return description;
             }
 
-            public void setDescription(String description) {
-                this.description = description;
-            }
         }
 
         public class CustomAdapter extends ArrayAdapter<WeatherEvent>{
