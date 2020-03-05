@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:id="@+id/id_mainView">
+
+    <TextView
+        android:id="@+id/id_nameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="92dp"
+        android:text="Jeffrey Paulraj"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/id_blockText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="Block 4B"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_nameText" />
+
+    <RadioGroup
+        android:id="@+id/id_radioGroup"
+        android:layout_width="333dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="28dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_blockText"
+        app:layout_constraintVertical_bias="0.01999998">
+
+        <RadioButton
+            android:id="@+id/id_toastButton"
+            android:layout_width="83dp"
+            android:layout_height="wrap_content"
+            android:text="Toast" />
+
+        <RadioButton
+            android:id="@+id/id_changeColorButton"
+            android:layout_width="135dp"
+            android:layout_height="wrap_content"
+            android:text="Change Color" />
+
+        <RadioButton
+            android:id="@+id/id_uppercaseButton"
+            android:layout_width="124dp"
+            android:layout_height="wrap_content"
+            android:text="Uppercase" />
+
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/id_runButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Run"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_radioGroup"
+        app:layout_constraintVertical_bias="0.13" />
+
+    <Button
+        android:id="@+id/id_launchButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Launch App"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/id_runButton"
+        app:layout_constraintVertical_bias="0.285" />
+</androidx.constraintlayout.widget.ConstraintLayout>
